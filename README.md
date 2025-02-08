@@ -16,7 +16,7 @@ and run the latest local LLMs
 
 ```bash
 git clone https://github.com/jeanelmurr/local-ai.git
-cd self-hosted-ai-starter-kit
+cd local-ai
 ```
 
 ### Running n8n using Docker Compose
@@ -43,7 +43,7 @@ To open n8n at any time, visit <http://localhost:5678/> in your browser.
 
 ## Upgrading
 
-```
+```bash
 docker compose pull
 docker compose create && docker compose up
 ```
