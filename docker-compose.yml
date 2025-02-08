@@ -8,7 +8,7 @@ networks:
 services:
   n8n:
     image: n8nio/n8n:latest
-    container_name: n8n
+    container_name: n8n-local
     restart: unless-stopped
     networks:
       - network
@@ -26,7 +26,7 @@ services:
   
   ollama:
     image: ollama/ollama:latest
-    container_name: ollama
+    container_name: ollama-local
     restart: unless-stopped
     networks:
       - network
