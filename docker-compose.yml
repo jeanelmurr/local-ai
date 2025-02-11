@@ -23,6 +23,7 @@ services:
       - N8N_SECURE_COOKIE=false
     volumes:
       - n8n_storage:/home/node/.n8n
+      - ./n8n/docs:/home/node/docs
   
   ollama:
     image: ollama/ollama:latest
