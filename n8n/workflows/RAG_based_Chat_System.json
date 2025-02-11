@@ -1,5 +1,5 @@
 {
-  "name": "Document Vectorizing and Chat Agent",
+  "name": "RAG-based Chat System",
   "nodes": [
     {
       "parameters": {
@@ -247,7 +247,7 @@
     },
     {
       "parameters": {
-        "content": "## Tool to add local files to Vector DB",
+        "content": "## File Processing & Vector Storage",
         "height": 687,
         "width": 1913,
         "color": 5
@@ -504,7 +504,7 @@
     },
     {
       "parameters": {
-        "content": "## Tool to Chat with Agent using Vector DB",
+        "content": "## AI Chat with Vector Search",
         "height": 607,
         "width": 1113,
         "color": 7
@@ -709,7 +709,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d759e6b3-5832-4b67-b65c-db8e343a0f33",
+  "versionId": "7f8f6117-53a0-4e88-9b75-3e85243229be",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f5e8324de14130dd8386fc17cffc399a7303c0f25ae751881fb2ef25d01547db"
