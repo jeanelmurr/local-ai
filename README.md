@@ -19,14 +19,11 @@ git clone https://github.com/jeanelmurr/local-ai.git
 cd local-ai
 ```
 
-### Running n8n using Docker Compose
+### Running Local AI using Docker Compose
 
 ```bash
-docker compose up
+docker compose up -d
 ```
-
-After you followed the quick start set-up below, change the Ollama credentials
-by using `http://host.docker.internal:11434/` as the host.
 
 ## ⚡️ Quick start and usage
 
@@ -35,15 +32,19 @@ After completing the installation steps above, simply follow the steps below to 
 
 1. Open <http://localhost:5678/> in your browser to set up n8n. You’ll only
    have to do this once.
-2. If this is the first time you’re running the workflow, you may need to wait
-   until Ollama finishes downloading Llama3.2. You can inspect the docker
-   console logs to check on the progress.
+2. If this is the first time you’re running the workflow, you may need to deploy some models into Ollama.
+   To do so, visit <https://ollama.com/search> and search for your model. 
+   Run the following command to deploy:
+   ```bash
+   docker exec ollama-local ollama pull *model_name* (ex: llama3.2)
+   ```
 
 To open n8n at any time, visit <http://localhost:5678/> in your browser.
 
 ## Upgrading
 
 ```bash
+docker compose down
 docker compose pull
-docker compose create && docker compose up
+docker compose up -d
 ```
