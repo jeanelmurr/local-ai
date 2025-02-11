@@ -34,7 +34,7 @@ After completing the installation steps above, simply follow the steps below to 
    have to do this once.
 2. If this is the first time you’re running the workflow, you may need to deploy some models into Ollama.
    To do so, visit <https://ollama.com/search> and search for your model. 
-   Run the following command to deploy:
+   Then run the following command to deploy:
    ```bash
    docker exec ollama-local ollama pull model_name (ex: llama3.2)
    ```
