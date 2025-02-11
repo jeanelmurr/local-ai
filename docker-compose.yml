@@ -18,8 +18,6 @@ services:
       - DB_TYPE=sqlite
       - N8N_DIAGNOSTICS_ENABLED=false
       - N8N_PERSONALIZATION_ENABLED=false
-      - N8N_ENCRYPTION_KEY=<your-encryption-key>
-      - N8N_USER_MANAGEMENT_JWT_SECRET=<your-jwt-secret>
       - N8N_SECURE_COOKIE=false
     volumes:
       - n8n_storage:/home/node/.n8n

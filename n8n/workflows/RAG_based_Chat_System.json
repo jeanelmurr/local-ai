@@ -27,36 +27,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "20c3e843-ad3c-493d-ad31-dbea06141c1e",
-              "name": "path",
-              "value": "={{ $json.path }}",
-              "type": "string"
-            },
-            {
-              "id": "749c69b3-2ab6-41af-91af-ac0458134983",
-              "name": "filename",
-              "value": "={{ $json.path.split('/').last() }}",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -440,
-        20
-      ],
-      "id": "6c1d2936-a085-45c8-a74a-19078f8a9f62",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
         "jsonMode": "expressionData",
         "jsonData": "={{ $json.text }}",
         "options": {
@@ -64,7 +34,7 @@
             "metadataValues": [
               {
                 "name": "filename",
-                "value": "={{ $('Edit Fields').item.json.filename }}"
+                "value": "={{ $('Set File Name').item.json.filename }}"
               }
             ]
           }
@@ -129,13 +99,19 @@
     },
     {
       "parameters": {
-        "options": {}
+        "public": true,
+        "initialMessages": "Hi Temenosian! 👋\nI'm your Temenos Banking Cloud assistant. How can I assist you today?",
+        "options": {
+          "inputPlaceholder": "Type your question..",
+          "loadPreviousSession": "memory",
+          "title": "Temenos AI "
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.1,
       "position": [
-        -620,
-        480
+        -660,
+        540
       ],
       "id": "f66b3af6-4f09-4b27-b54e-308ce59b5c38",
       "name": "When chat message received",
@@ -159,8 +135,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1,
       "position": [
-        -100,
-        700
+        40,
+        720
       ],
       "id": "9cefce45-8900-4ce7-b8cc-230136c40d4d",
       "name": "Supabase Vector Store",
@@ -173,6 +149,8 @@
     },
     {
       "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
         "options": {
           "systemMessage": "Role & Context:\n- User Role: I am a Technical Solutions Architect at Temenos.\n- Assistant Role: You are my assistant specialized in addressing clients requirements.\n\nInstructions:\n- Factual Accuracy: Use only the information contained in your knowledge base.\n- Tone & Style: Adopt a precise, factual, and direct style. Ensure that the response style is consistent with a near-zero AI temperature—minimizing creative interpretation and maintaining strict adherence to the source material."
         }
@@ -180,8 +158,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        -280,
-        480
+        -120,
+        520
       ],
       "id": "ceb37ee0-5aee-433d-b3be-418cdebd5d49",
       "name": "AI Agent"
@@ -196,8 +174,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        -440,
-        700
+        -260,
+        760
       ],
       "id": "3c10cd6e-1baa-456f-8cb4-4f257e77f705",
       "name": "Azure OpenAI Chat Model1",
@@ -209,12 +187,15 @@
       }
     },
     {
-      "parameters": {},
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}"
+      },
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        -260,
-        700
+        -100,
+        760
       ],
       "id": "31262d71-c26b-49b4-86a4-163bbbc723bc",
       "name": "Postgres Chat Memory",
@@ -233,8 +214,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        40,
-        860
+        120,
+        900
       ],
       "id": "0d6e1906-7f28-4e82-a878-64e18e462923",
       "name": "Embeddings Azure OpenAI1",
@@ -248,7 +229,7 @@
     {
       "parameters": {
         "content": "## File Processing & Vector Storage",
-        "height": 687,
+        "height": 707,
         "width": 1913,
         "color": 5
       },
@@ -324,7 +305,7 @@
                 "conditions": [
                   {
                     "id": "3528e786-91ef-4e09-8ff9-6c35aee77747",
-                    "leftValue": "{{ $json.event }}",
+                    "leftValue": "={{ $json.event }}",
                     "rightValue": "unlink",
                     "operator": {
                       "type": "string",
@@ -424,8 +405,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        260,
-        -180
+        280,
+        -60
       ],
       "id": "5bc3c1df-5629-4ec5-93b6-6fa798428132",
       "name": "Check file type"
@@ -438,7 +419,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        540,
+        520,
         -200
       ],
       "id": "0177d0c7-3a5e-4468-a014-10cd7d1eecd1",
@@ -449,7 +430,7 @@
         "operation": "delete",
         "tableId": "documents",
         "filterType": "string",
-        "filterString": "=metadata->>'filename'=like.*'{{$json.filename}}'*"
+        "filterString": "=metadata->>filename=eq.{{ $json.filename }}"
       },
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
@@ -471,7 +452,7 @@
         "operation": "delete",
         "tableId": "documents",
         "filterType": "string",
-        "filterString": "=metadata->>'filename'=like.*'{{$json.filename}}'*"
+        "filterString": "=metadata->>filename=eq.{{ $json.filename }}"
       },
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
@@ -481,6 +462,7 @@
       ],
       "id": "c42ed370-aff0-4841-aa54-e6d89b21091f",
       "name": "Delete doc data",
+      "alwaysOutputData": false,
       "credentials": {
         "supabaseApi": {
           "id": "c2iNco03NllsUovn",
@@ -515,7 +497,90 @@
       "typeVersion": 1,
       "position": [
         -720,
-        420
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ragbasechat",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        760
+      ],
+      "id": "60c8c0e6-9605-4c1f-8274-0b994647a0e5",
+      "name": "Webhook",
+      "webhookId": "215f47b0-c0b0-45df-964d-bf33de203212"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "20c3e843-ad3c-493d-ad31-dbea06141c1e",
+              "name": "path",
+              "value": "={{ $json.path }}",
+              "type": "string"
+            },
+            {
+              "id": "749c69b3-2ab6-41af-91af-ac0458134983",
+              "name": "filename",
+              "value": "={{ encodeURIComponent($json.path.split('/').last()) }}",
+              "type": "string"
+            },
+            {
+              "id": "d1d3b558-bc70-4322-9331-ddd88b5c56bf",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -440,
+        20
+      ],
+      "id": "6c1d2936-a085-45c8-a74a-19078f8a9f62",
+      "name": "Set File Name"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9a9a245e-f1a1-4282-bb02-a81ffe629f0f",
+              "name": "chatInput",
+              "value": "={{ $json?.chatInput || $json.body.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "b80831d8-c653-4203-8706-adedfdb98f77",
+              "name": "sessionId",
+              "value": "={{ $json?.sessionId || $json.body.sessionId}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dcd7ccd6-95ee-4ce2-823b-b49c672da164",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        540
       ]
     }
   ],
@@ -525,18 +590,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Check action",
+            "node": "Set File Name",
             "type": "main",
             "index": 0
           }
@@ -569,7 +623,7 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -606,6 +660,11 @@
         [
           {
             "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "When chat message received",
             "type": "ai_memory",
             "index": 0
           }
@@ -703,13 +762,46 @@
           }
         ]
       ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File Name": {
+      "main": [
+        [
+          {
+            "node": "Check action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7f8f6117-53a0-4e88-9b75-3e85243229be",
+  "versionId": "07323382-63fc-4610-9d7f-1413ce278125",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f5e8324de14130dd8386fc17cffc399a7303c0f25ae751881fb2ef25d01547db"
