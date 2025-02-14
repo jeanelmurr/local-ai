@@ -1,0 +1,799 @@
+{
+  "name": "RAG-based Chat System (Qdrant)",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerOn": "folder",
+        "path": "/home/node/docs",
+        "events": [
+          "add",
+          "unlink",
+          "change"
+        ],
+        "options": {
+          "awaitWriteFinish": true,
+          "ignoreInitial": true,
+          "usePolling": true
+        }
+      },
+      "type": "n8n-nodes-base.localFileTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        20
+      ],
+      "id": "35bbeba3-a3f0-4b23-9a2d-97fe62ec7998",
+      "name": "Local File Trigger"
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.text }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "filename",
+                "value": "={{ $('Set File Name').item.json.filename }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -20
+      ],
+      "id": "06896061-39ac-4ae1-8b13-5fce5db2a85c",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        760,
+        -20
+      ],
+      "id": "0e843a76-3e7b-469a-b9fb-2e83878a4cec",
+      "name": "Embeddings Azure OpenAI",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "50709YNgkAJb2Dct",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi Temenosian! 👋\nI'm your Temenos Banking Cloud assistant. How can I assist you today?",
+        "options": {
+          "inputPlaceholder": "Type your question..",
+          "loadPreviousSession": "memory",
+          "title": "Temenos AI "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -660,
+        540
+      ],
+      "id": "8051db4c-5597-479b-95a9-24da23b3ccf0",
+      "name": "When chat message received",
+      "webhookId": "c4a743bd-4c4c-4b71-af9b-e7c26900d231"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "Role & Context:\n- User Role: I am a Technical Solutions Architect at Temenos.\n- Assistant Role: You are my assistant specialized in addressing clients requirements.\n\nInstructions:\n- Factual Accuracy: Use only the information contained in your knowledge base.\n- Tone & Style: Adopt a precise, factual, and direct style. Ensure that the response style is consistent with a near-zero AI temperature—minimizing creative interpretation and maintaining strict adherence to the source material."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -120,
+        520
+      ],
+      "id": "b2aabad3-8ca6-43d4-b46d-f60d111d3acb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        760
+      ],
+      "id": "f84c0ef6-060a-4c32-be14-005f3c00d05e",
+      "name": "Azure OpenAI Chat Model1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "50709YNgkAJb2Dct",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -100,
+        760
+      ],
+      "id": "89137c41-b5ca-4a0b-a39c-3a4f000668f1",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "nsm21pF51MylJJFs",
+          "name": "Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        120,
+        900
+      ],
+      "id": "7c7720b0-f7a2-4e8a-83a2-844e28bc0ec1",
+      "name": "Embeddings Azure OpenAI1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "50709YNgkAJb2Dct",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## File Processing & Vector Storage",
+        "height": 707,
+        "width": 1913,
+        "color": 5
+      },
+      "id": "fe14df27-8b11-4673-b85b-5fb308daf9eb",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -280
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "add",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Add"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f576132c-9862-4cb7-bbde-2e822c16849b",
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "update",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Update"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3528e786-91ef-4e09-8ff9-6c35aee77747",
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "unlink",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "delete"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -240,
+        20
+      ],
+      "id": "590a197f-3a13-4bf2-9672-09f41e8b0aec",
+      "name": "Check action"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -180
+      ],
+      "id": "4e57eb23-8546-4d30-9866-b7cc9ee96516",
+      "name": "Load File"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "=application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "40a210ba-75cf-4fc6-871f-3f9770cc71cf",
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "other"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        280,
+        -60
+      ],
+      "id": "77adbe60-747f-4369-a96a-3e7d6cdaac1c",
+      "name": "Check file type"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -200
+      ],
+      "id": "f546e17c-e96b-4536-bd26-a13f1da1c591",
+      "name": "Extract pdf text"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        980,
+        200
+      ],
+      "id": "3fb52458-0c7c-4f0e-8460-60852e4f5308",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "content": "## AI Chat with Vector Search",
+        "height": 607,
+        "width": 1113,
+        "color": 7
+      },
+      "id": "fcd10971-5fe1-4c1a-88b1-7b13838092f9",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "3936f465-432e-4da9-b55f-cd83c5eb7261",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        760
+      ],
+      "id": "3c1f22f5-556f-43f1-b504-348d7dca4eb0",
+      "name": "Webhook",
+      "webhookId": "3936f465-432e-4da9-b55f-cd83c5eb7261"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "20c3e843-ad3c-493d-ad31-dbea06141c1e",
+              "name": "path",
+              "value": "={{ $json.path }}",
+              "type": "string"
+            },
+            {
+              "id": "749c69b3-2ab6-41af-91af-ac0458134983",
+              "name": "filename",
+              "value": "={{ encodeURIComponent($json.path.split('/').last()) }}",
+              "type": "string"
+            },
+            {
+              "id": "d1d3b558-bc70-4322-9331-ddd88b5c56bf",
+              "name": "tag",
+              "value": "temenos_uniform_terms",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -440,
+        20
+      ],
+      "id": "41c31680-f353-4d70-9b60-73ff9cee68b7",
+      "name": "Set File Name"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9a9a245e-f1a1-4282-bb02-a81ffe629f0f",
+              "name": "chatInput",
+              "value": "={{ $json?.chatInput || $json.body.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "b80831d8-c653-4203-8706-adedfdb98f77",
+              "name": "sessionId",
+              "value": "={{ $json?.sessionId || $json.body.sessionId}}",
+              "type": "string"
+            },
+            {
+              "id": "19f0085c-0398-4acb-b193-1a34705f0574",
+              "name": "tag",
+              "value": "temenos_uniform_terms",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d028ecaf-f718-4854-9724-7824c9638d8d",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "={{ $('Set File Name').item.json.tag}}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -200
+      ],
+      "id": "7dcbb5db-ee03-499b-845f-7c4b9d61efe2",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "rLWg7V034yOmUkyB",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "knowledge_base",
+        "toolDescription": "Work with your data in Qdrant collection",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.tag}}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1,
+      "position": [
+        40,
+        760
+      ],
+      "id": "6b8d22c1-bf28-4435-b63c-dbecc1292a61",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "rLWg7V034yOmUkyB",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://qdrant:6333/collections/temenos_uniform_terms/points/delete",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"filter\": {\n    \"must\": [\n      {\n        \"key\": \"metadata.filename\",\n        \"match\": { \"value\": \"{{ $json.filename }}\" }\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        60,
+        260
+      ],
+      "id": "47a12c13-faf0-498d-bfae-84322f529d99",
+      "name": "Delete document data"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://qdrant:6333/collections/temenos_uniform_terms/points/delete",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"filter\": {\n    \"must\": [\n      {\n        \"key\": \"metadata.filename\",\n        \"match\": { \"value\": \"{{ $json.filename }}\" }\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        60,
+        20
+      ],
+      "id": "303d765a-e7f1-4806-a177-8a1af6c895a2",
+      "name": "Delete document data for update"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Local File Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set File Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Azure OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "When chat message received",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Azure OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check action": {
+      "main": [
+        [
+          {
+            "node": "Load File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete document data for update",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete document data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load File": {
+      "main": [
+        [
+          {
+            "node": "Check file type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check file type": {
+      "main": [
+        [
+          {
+            "node": "Extract pdf text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Extract pdf text": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File Name": {
+      "main": [
+        [
+          {
+            "node": "Check action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete document data for update": {
+      "main": [
+        [
+          {
+            "node": "Load File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "86750318-2bd9-4374-b3ef-329b0fa1a75f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f5e8324de14130dd8386fc17cffc399a7303c0f25ae751881fb2ef25d01547db"
+  },
+  "id": "Es6N26PbMsQGJrq5",
+  "tags": []
+}
