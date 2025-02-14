@@ -1,6 +1,7 @@
 volumes:
   n8n_storage:
   ollama_storage:
+  qdrant_storage:
 
 networks:
   network:
@@ -35,3 +36,14 @@ services:
       - OLLAMA_HOST=0.0.0.0
     volumes:
       - ollama_storage:/root/.ollama
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant-local
+    networks: 
+      - network
+    restart: unless-stopped
+    ports:
+      - 6333:6333
+    volumes:
+      - qdrant_storage:/qdrant/storage
