@@ -23,6 +23,7 @@ services:
       - N8N_ENCRYPTION_KEY=super-secret-key
       - N8N_DIAGNOSTICS_ENABLED=false
       - N8N_PERSONALIZATION_ENABLED=false
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_SECURE_COOKIE=false
     volumes:
       - n8n_storage:/home/node/.n8n
