@@ -13,10 +13,8 @@ services:
     restart: unless-stopped
     networks:
       - network
-    ports:
-      - 5678:5678
     environment:
-      - DB_TYPE=postgresdb # [sqlite, postgresdb]
+      - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=${N8N_POSTGRES_HOST}
       - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
       - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
@@ -28,7 +26,22 @@ services:
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./n8n/docs:/home/node/docs
-  
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-local
+    restart: unless-stopped
+    networks:
+      - network
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certificates:/etc/nginx/certificates
+    depends_on:
+      - n8n
+
   ollama:
     image: ollama/ollama:latest
     container_name: ollama-local
