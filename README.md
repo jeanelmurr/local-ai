@@ -48,3 +48,32 @@ docker compose down
 docker compose pull
 docker compose up -d
 ```
+
+## Tips and Tricks
+
+### Exporting Workflows and Credentials
+
+```bash
+docker exec -u node -it <n8n-container-name> n8n export:workflow --all --output=/home/node/exported-workflows.json
+docker exec -u node -it <n8n-container-name> n8n export:credentials --all --output=/home/node/exported-credentials.json
+```
+
+### Copying files from the Docker container to the local machine
+
+```bash
+docker cp <n8n-container-name>:/home/node/exported-workflows.json ./exported-workflows.json
+docker cp <n8n-container-name>:/home/node/exported-credentials.json ./exported-credentials.json
+```
+
+### Copying files from the local machine to the new Docker container
+
+```bash
+docker cp ./exported-credentials.json n8n-local:/home/node/
+docker cp ./exported-workflows.json n8n-local:/home/node/
+```
+
+### Importing Workflows and Credentials
+
+```bash
+docker exec -u node -it <n8n-container-name> n8n import:credentials --input=/home/node/exported-credentials.json && n8n import:workflow --input=/home/node/exported-workflows.json
+```

@@ -16,10 +16,14 @@ services:
     ports:
       - 5678:5678
     environment:
-      - DB_TYPE=sqlite
+      - DB_TYPE=postgresdb # [sqlite, postgresdb]
+      - DB_POSTGRESDB_HOST=${N8N_POSTGRES_HOST}
+      - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
+      - N8N_ENCRYPTION_KEY=super-secret-key
       - N8N_DIAGNOSTICS_ENABLED=false
       - N8N_PERSONALIZATION_ENABLED=false
-      - N8N_SECURE_COOKIE=false
+      - N8N_SECURE_COOKIE=true
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./n8n/docs:/home/node/docs
