@@ -30,7 +30,7 @@ docker compose up -d
 The core of the Local AI is a Docker Compose file, pre-configured with network and storage settings, minimizing the need for additional installations.
 After completing the installation steps above, simply follow the steps below to get started.
 
-1. Open <http://localhost:5678/> in your browser to set up n8n. You’ll only
+1. Open <https://localhost/> in your browser to set up n8n. You’ll only
    have to do this once.
 2. If this is the first time you’re running the workflow, you may need to deploy some models into Ollama.
    To do so, visit <https://ollama.com/search> and search for your model. 
