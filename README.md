@@ -10,6 +10,9 @@ integrations and advanced AI components
 ✅ [**Ollama**](https://ollama.com/) - Cross-platform LLM platform to install
 and run the latest local LLMs
 
+✅ [**Qdrant**](https://qdrant.tech/) - Open-source, high performance vector
+store with an comprehensive API
+
 ## Installation
 
 ### Cloning the Repository
@@ -39,7 +42,7 @@ After completing the installation steps above, simply follow the steps below to 
    docker exec ollama-local ollama pull model_name (ex: llama3.2)
    ```
 
-To open n8n at any time, visit <http://localhost:5678/> in your browser.
+To open n8n at any time, visit <https//localhost/> in your browser.
 
 ## Upgrading
 
