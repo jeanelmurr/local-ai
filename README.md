@@ -13,6 +13,8 @@ and run the latest local LLMs
 ✅ [**Qdrant**](https://qdrant.tech/) - Open-source, high performance vector
 store with an comprehensive API
 
+✅ [**Nginx**](https://www.nginx.com/) - A high-performance web server that acts as a reverse proxy, load balancer, and HTTP cache.
+
 ## Installation
 
 ### Cloning the Repository
